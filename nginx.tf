@@ -68,7 +68,7 @@ resource "azurerm_virtual_machine" "nginx" {
   resource_group_name   = "${azurerm_resource_group.default.name}"
   network_interface_ids = ["${azurerm_network_interface.nginx.id}"]
   vm_size               = "Standard_DS1_v2"
-
+  depends_on = [azurerm_virtual_machine.jenkins]
 
   storage_image_reference {
     publisher = "credativ"
@@ -77,13 +77,13 @@ resource "azurerm_virtual_machine" "nginx" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "myosdisk1"
+    name              = "${azurerm_virtual_machine.nginx.name}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "nginx"
+    computer_name  = "${azurerm_virtual_machine.nginx.name}"
     admin_username = "${var.admin_user}"
   }
   os_profile_linux_config {
@@ -115,6 +115,7 @@ resource "azurerm_virtual_machine" "nginx" {
 		"sudo certbot certonly --nginx -n --agree-tos --email ${var.certbot_email} --domains ${azurerm_public_ip.nginx.fqdn}",
 		"sudo cp /tmp/nginx.conf /etc/nginx/nginx.conf",
 		"sudo sed -i 's/{{FQDN}}/${azurerm_public_ip.nginx.fqdn}/g' /etc/nginx/nginx.conf",
+		"sudo sed -i 's/{{JENKINS_HOST}}/${azurerm_virtual_machine.jenkins.name}/g' /etc/nginx/nginx.conf",
 		"sudo nginx -s reload"
 	]
   } 

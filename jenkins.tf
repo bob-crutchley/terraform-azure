@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "jenkins" {
-    name                         = "jenkins-pip"
+    name                         = "${var.prefix}-jenkins-pip"
     location                     = "${azurerm_resource_group.default.location}"
     resource_group_name          = "${azurerm_resource_group.default.name}"
     allocation_method            = "Dynamic"
@@ -7,7 +7,7 @@ resource "azurerm_public_ip" "jenkins" {
 }
 
 resource "azurerm_network_security_group" "jenkins" {
-    name                = "jenkins-nsg"
+    name                = "${var.prefix}-jenkins-nsg"
     location            = "${azurerm_resource_group.default.location}"
     resource_group_name = "${azurerm_resource_group.default.name}"
     
@@ -23,17 +23,6 @@ resource "azurerm_network_security_group" "jenkins" {
         destination_address_prefix = "*"
     }
 
-    security_rule {
-        name                       = "JENKINS_WEB"
-        priority                   = 1002
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "Tcp"
-        source_port_range          = "*"
-        destination_port_range     = "8080"
-        source_address_prefix      = "*"
-        destination_address_prefix = "*"
-    }
 }
 
 resource "azurerm_network_interface" "jenkins" {
@@ -44,7 +33,7 @@ resource "azurerm_network_interface" "jenkins" {
 
 
   ip_configuration {
-    name                          = "testconfiguration1"
+    name                          = "${var.prefix}-jenkins-ip-config"
     subnet_id                     = "${azurerm_subnet.default.id}"
     private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = "${azurerm_public_ip.jenkins.id}"
@@ -67,13 +56,13 @@ resource "azurerm_virtual_machine" "jenkins" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "myosdisk1"
+    name              = "${azurerm_virtual_machine.jenkins.name}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "jenkins"
+    computer_name  = "${azurerm_virtual_machine.jenkins.name}"
     admin_username = "${var.admin_user}"
   }
   os_profile_linux_config {
@@ -92,7 +81,7 @@ resource "azurerm_virtual_machine" "jenkins" {
 		"sudo apt install -y curl",
 		"curl https://get.docker.com | sudo bash",
 		"sudo usermod -aG docker ${var.admin_user}",
-		"sudo docker run -d --name jenkins -p 8080:8080 jenkins/jenkins:latest"
+		"sudo docker run -d --name jenkins -p 8080:80 jenkins/jenkins:latest"
 	]
   	connection {
 		type = "ssh"
