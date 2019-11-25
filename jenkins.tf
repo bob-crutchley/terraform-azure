@@ -56,13 +56,13 @@ resource "azurerm_virtual_machine" "jenkins" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "${azurerm_virtual_machine.jenkins.name}"
+    name              = "${var.prefix}-jenkins-vm"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "${azurerm_virtual_machine.jenkins.name}"
+    computer_name  = "${var.prefix}-jenkins-vm"
     admin_username = "${var.admin_user}"
   }
   os_profile_linux_config {

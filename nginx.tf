@@ -77,13 +77,13 @@ resource "azurerm_virtual_machine" "nginx" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "${azurerm_virtual_machine.nginx.name}"
+    name              = "${var.prefix}-nginx-vm"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "${azurerm_virtual_machine.nginx.name}"
+    computer_name  = "${var.prefix}-nginx-vm"
     admin_username = "${var.admin_user}"
   }
   os_profile_linux_config {
