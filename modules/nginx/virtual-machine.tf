@@ -1,8 +1,8 @@
 resource "azurerm_virtual_machine" "nginx" {
   name                  = "${terraform.workspace}-nginx-vm"
-  location              = "${module.common.resource_group.location}"
-  resource_group_name   = "${module.common.resource_group.name}"
-  network_interface_ids = ["${module.network.nginx_network_interface.id}"]
+  location              = "${azurerm_resource_group.default.location}"
+  resource_group_name   = "${azurerm_resource_group.default.name}"
+  network_interface_ids = ["${azurerm_network_interface.nginx.id}"]
   vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
@@ -35,7 +35,7 @@ resource "azurerm_virtual_machine" "nginx" {
 		type = "ssh"
 		user = "${var.admin_user}"
 		private_key = file("/home/${var.admin_user}/.ssh/id_rsa")
-		host = "${module.network.nginx_public_ip.fqdn}"
+		host = "${azurerm_public_ip.nginx.fqdn}"
   	}
   provisioner "remote-exec" {
 	  inline = [
