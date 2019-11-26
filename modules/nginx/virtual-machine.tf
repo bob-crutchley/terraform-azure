@@ -1,5 +1,5 @@
 resource "azurerm_virtual_machine" "nginx" {
-  name                  = "${var.prefix}-nginx-vm"
+  name                  = "${terraform.workspace}-nginx-vm"
   location              = "${azurerm_resource_group.default.location}"
   resource_group_name   = "${azurerm_resource_group.default.name}"
   network_interface_ids = ["${azurerm_network_interface.nginx.id}"]
@@ -12,13 +12,13 @@ resource "azurerm_virtual_machine" "nginx" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "${var.prefix}-nginx-vm"
+    name              = "${terraform.workspace}-nginx-vm"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "${var.prefix}-nginx-vm"
+    computer_name  = "${terraform.workspace}-nginx-vm"
     admin_username = "${var.admin_user}"
   }
   os_profile_linux_config {

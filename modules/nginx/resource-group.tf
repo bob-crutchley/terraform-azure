@@ -1,4 +1,4 @@
 resource "azurerm_resource_group" "default" {
-  name     = "${var.prefix}"
+  name     = "${terraform.workspace}"
   location = "uksouth"
 }
