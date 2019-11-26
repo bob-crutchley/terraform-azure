@@ -29,7 +29,7 @@ resource "azurerm_virtual_machine" "nginx" {
 	}
   }
   tags = {
-    environment = "staging"
+    environment = "${terraform.workspace}"
   }
   	connection {
 		type = "ssh"
