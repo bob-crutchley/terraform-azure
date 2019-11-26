@@ -1,4 +1,11 @@
 #!/bin/bash
+if [[ $_ != $0 ]]; then
+    echo "Initialising Azurerm Backend" 
+else
+    echo "This script is intended to be sourced, run 'source init.sh' instead."
+    exit 1
+fi
+
 RESOURCE_GROUP_NAME=tfstate
 STORAGE_ACCOUNT_NAME=tfstate$(date +%s) CONTAINER_NAME=tfstate
 EXISTING_RESOURCE_GROUP_NAME=$(az group list --query "[?name=='tfstate'] | [0].name" -o tsv)
