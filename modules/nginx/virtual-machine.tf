@@ -1,7 +1,7 @@
 resource "azurerm_virtual_machine" "nginx" {
   name                  = "${terraform.workspace}-nginx-vm"
-  location              = "${azurerm_resource_group.default.location}"
-  resource_group_name   = "${azurerm_resource_group.default.name}"
+  location              = "${var.resource_group.location}"
+  resource_group_name   = "${var.resource_group.name}"
   network_interface_ids = ["${azurerm_network_interface.nginx.id}"]
   vm_size               = "Standard_DS1_v2"
 

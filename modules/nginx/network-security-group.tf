@@ -1,7 +1,7 @@
 resource "azurerm_network_security_group" "nginx" {
     name                = "nginx-nsg"
-    location            = "${azurerm_resource_group.default.location}"
-    resource_group_name = "${azurerm_resource_group.default.name}"
+    location            = "${var.resource_group.location}"
+    resource_group_name = "${var.resource_group.name}"
     
     security_rule {
         name                       = "SSH"
