@@ -19,29 +19,32 @@ resource "azurerm_virtual_machine" "default" {
   }
   os_profile {
     computer_name  = "${terraform.workspace}-jenkins-vm"
-    admin_username = var.admin_user
+    admin_username = "jenkins"
   }
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-	path = "/home/${var.admin_user}/.ssh/authorized_keys"
-	key_data = file("/home/${var.admin_user}/.ssh/id_rsa.pub")
-	}
+	    path = "/home/jenkins/.ssh/authorized_keys"
+	    key_data = file("~/.ssh/id_rsa.pub")
+	  }
   }
   tags = {
     environment = terraform.workspace
   }
-  	connection {
+  connection {
 		type = "ssh"
 		user = var.admin_user
-		private_key = file("/home/${var.admin_user}/.ssh/id_rsa")
+		private_key = file(pathexpand("~/.ssh/id_rsa"))
 		host = azurerm_public_ip.default.fqdn
-  	}
+  }
   provisioner "remote-exec" {
 	  inline = [
 		  "sudo apt update",
-		  "sudo apt install -y nginx",
-      "sudo systemctl enable --now nginx"
+      "while ps -aef | grep -v grep | grep apt; do echo 'waiting for apt lock' sleep 1; done",
+      "sudo apt install -y python3 python3-pip",
+      "mkdir -p ~/.local/bin",
+      "echo 'PATH=$PATH:~/.local/bin' >> ~/.bashrc",
+      "pip3 install --user ansible"
 	  ]
   } 
 }

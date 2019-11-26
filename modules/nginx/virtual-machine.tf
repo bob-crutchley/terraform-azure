@@ -24,24 +24,18 @@ resource "azurerm_virtual_machine" "nginx" {
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-	path = "/home/${var.admin_user}/.ssh/authorized_keys"
-	key_data = file("/home/${var.admin_user}/.ssh/id_rsa.pub")
+	  path = "/home/${var.admin_user}/.ssh/authorized_keys"
+	  key_data = file(pathexpand("~/.ssh/id_rsa.pub"))
 	}
   }
   tags = {
     environment = terraform.workspace
   }
-  	connection {
+  connection {
 		type = "ssh"
 		user = var.admin_user
-		private_key = file("/home/${var.admin_user}/.ssh/id_rsa")
+		private_key = file(pathexpand("~/.ssh/id_rsa"))
 		host = azurerm_public_ip.nginx.fqdn
-  	}
-  provisioner "remote-exec" {
-	  inline = [
-		  "sudo apt update",
-		  "sudo apt install -y nginx",
-      "sudo systemctl enable --now nginx"
-	  ]
-  } 
+  }
 }
+
