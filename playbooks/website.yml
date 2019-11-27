@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: install git
+    apt:
+      name: git
+      state: latest
+      update_cache: true
+  - name: Install NGINX
+    apt:
+      name: nginx
+      state: latest
+      update_cache: true
+  - name: Start NGINX Service
+    service:
+      name: nginx
+      state: started
+  - name: Install Website
+    git:
+      repo: 'https://github.com/bob-crutchley/PostcardProject'
+      dest: /opt/PostcardProject
+  - name: Install NGINX Config
+    copy:
+      src: ../resources/nginx.conf
+      dest: /etc/nginx/nginx.conf
+  - name: Reload NGINX
+    service:
+      name: nginx
+      state: reloaded
+  

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# NGINX
+# website
 ansible-playbook \
-    -i "$(terraform output nginx_fqdn)," \
+    -i "$(terraform output website_fqdn)," \
     -u jenkins \
-    --ssh-common-args="-o StrictHostKeyChecking=no" playbooks/nginx.yml
+    --ssh-common-args="-o StrictHostKeyChecking=no" playbooks/website.yml
 
