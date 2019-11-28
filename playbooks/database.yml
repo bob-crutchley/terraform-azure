@@ -13,19 +13,9 @@
       name: mysql
       enabled: yes
       state: started
-  - name: pip dependencies
-    shell: pip3 install setuptools virtualenv
-  - name: pymysql
-    pip:
-      name: ['setuptools', 'virtualenv']
-  - name: mysql users
-    mysql_user:
-      name: bob
-      password: password
-      priv: '*.*:ALL'
-      state: present
-    mysql_user:
-      name: ''
-      host_all: yes
-      state: absent
-
+  - name: mysql database
+    shell: mysql -u root -e 'CREATE DATABASE IF NOT EXISTS postcard;'
+  - name: mysql user postcard user
+    shell: mysql -u root -e "CREATE USER IF NOT EXISTS 'postcard-api'@'%' IDENTIFIED BY 'password';"
+  - name: mysql user postcard user permissions
+    shell: mysql -u root -e "GRANT ALL ON postcard.* TO 'postcard-api'@'%';"
