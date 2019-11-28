@@ -2,17 +2,32 @@
 - hosts: all
   become: true
   tasks:
-  - name: Install NGINX
+  - name: depencency repo
+    apt_repository:
+      repo: "deb http://deb.debian.org/debian stretch-backports main"
+      state: present
+  - name: install nginx & certbot
     apt:
-      name: nginx
+      name:
+        - certbot
+        - python-certbot-nginx
+        - nginx
+      default_release: stretch-backports
       state: latest
       update_cache: true
   - name: Start NGINX Service
     service:
       name: nginx
       state: started
+  - name: check for certificates
+    stat:
+      path: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+    register: certificate
+  - name: configure TLS
+    shell: "certbot certonly --nginx -n --agree-tos --email test@gmail.com --domains '{{ inventory_hostname }}'"
+    when: certificate.stat.exists == False
   - name: configure nginx
-    copy:
+    template:
       src: ../resources/nginx.conf
       dest: /etc/nginx/nginx.conf
   - name: reload nginx service

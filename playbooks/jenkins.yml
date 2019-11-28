@@ -19,7 +19,7 @@
       name: jenkins
       state: latest
       update_cache: true
-  - name: jenkins servicer
+  - name: jenkins service
     service:
       name: jenkins
       state: started
