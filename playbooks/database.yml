@@ -2,6 +2,10 @@
 - hosts: all
   become: true
   tasks:
+  - name: mysql config directory
+    file:
+      path: /etc/mysql
+      state: directory
   - name: mysql configuration
     copy:
       src: ../resources/my.cnf

@@ -19,10 +19,6 @@
     user:
       name: postcard
       shell: /bin/bash
-  - name: stop postcard service
-    service:
-      name: postcard
-      state: stopped
   - name: install service script
     template:
       src: ../resources/postcard.service
@@ -30,5 +26,5 @@
   - name: start postcard service
     service:
       name: postcard
-      state: started
+      state: restarted
 
