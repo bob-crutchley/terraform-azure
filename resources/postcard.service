@@ -1,0 +1,9 @@
+[Unit]
+Description=Postcard API Server
+[Service]
+User=postcard
+WorkingDirectory=/home/postcard
+ExecStart=/usr/bin/java -jar /home/postcard/app.jar
+[Install]
+WantedBy=multi-user.target
+
