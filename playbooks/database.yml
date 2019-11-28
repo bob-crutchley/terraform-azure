@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: mysql install
+    apt:
+      deb: https://dev.mysql.com/get/mysql-apt-config_0.8.8-1_all.deb
+    apt:
+      name: ['mysql-server', 'mysql-client']
+      update_cache: yes
+  - name: mysql service
+    service:
+      name: mysql
+      enabled: yes
+      state: started
+  - name: pip dependencies
+    shell: pip3 install setuptools virtualenv
+  - name: pymysql
+    pip:
+      name: ['setuptools', 'virtualenv']
+  - name: mysql users
+    mysql_user:
+      name: bob
+      password: password
+      priv: '*.*:ALL'
+      state: present
+    mysql_user:
+      name: ''
+      host_all: yes
+      state: absent
+
