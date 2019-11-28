@@ -3,7 +3,12 @@ Description=Postcard API Server
 [Service]
 User=postcard
 WorkingDirectory=/home/postcard
-ExecStart=/usr/bin/java -jar /home/postcard/app.jar
+ExecStart=/usr/bin/java \
+    -Dserver.port=8080 \
+    -Dspring.datasource.url="jdbc:mysql://{{ lookup('env', 'MYSQL_HOST') }}:3306/{{ lookup('env', 'MYSQL_DATABASE') }}?serverTimezone=UTC" \
+    -Dspring.datasource.username="{{ lookup('env', 'MYSQL_USER') }}" \
+    -Dspring.datasource.password="{{ lookup('env', 'MYSQL_PASSWORD') }}" \
+    -jar /opt/postcard/api/target/postcard.jar
 [Install]
 WantedBy=multi-user.target
 

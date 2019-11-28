@@ -21,7 +21,7 @@
       repo: 'https://github.com/bob-crutchley/PostcardProject'
       dest: /opt/PostcardProject
   - name: Install NGINX Config
-    copy:
+    template:
       src: ../resources/nginx.conf
       dest: /etc/nginx/nginx.conf
   - name: Reload NGINX

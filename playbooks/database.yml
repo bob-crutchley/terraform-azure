@@ -2,6 +2,10 @@
 - hosts: all
   become: true
   tasks:
+  - name: mysql configuration
+    copy:
+      src: ../resources/my.cnf
+      dest: /etc/mysql/my.cnf
   - name: mysql install
     apt:
       deb: https://dev.mysql.com/get/mysql-apt-config_0.8.8-1_all.deb
@@ -14,8 +18,8 @@
       enabled: yes
       state: started
   - name: mysql database
-    shell: mysql -u root -e 'CREATE DATABASE IF NOT EXISTS postcard;'
+    shell: mysql -u root -e "CREATE DATABASE IF NOT EXISTS {{ lookup('env', 'MYSQL_DATABASE') }};"
   - name: mysql user postcard user
-    shell: mysql -u root -e "CREATE USER IF NOT EXISTS 'postcard-api'@'%' IDENTIFIED BY 'password';"
+    shell: mysql -u root -e "CREATE USER IF NOT EXISTS '{{ lookup('env', 'MYSQL_USER') }}'@'%' IDENTIFIED BY '{{ lookup('env', 'MYSQL_PASSWORD') }}';"
   - name: mysql user postcard user permissions
-    shell: mysql -u root -e "GRANT ALL ON postcard.* TO 'postcard-api'@'%';"
+    shell: mysql -u root -e "GRANT ALL ON {{ lookup('env', 'MYSQL_DATABASE') }}.* TO '{{ lookup('env', 'MYSQL_USER') }}'@'%';"

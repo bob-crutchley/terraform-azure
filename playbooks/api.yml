@@ -1,0 +1,34 @@
+- hosts: all
+  become: true
+  tasks:
+  - name: install apt dependencies
+    apt:
+      name:
+      - openjdk-8-jdk
+      - maven
+      - git
+  - name: download latest code
+    git:
+      repo: https://github.com/bob-crutchley/PostcardProject
+      dest: /opt/postcard
+  - name: build project
+    shell:
+      cmd: 'mvn clean package'
+      chdir: /opt/postcard/api
+  - name: postcard user
+    user:
+      name: postcard
+      shell: /bin/bash
+  - name: stop postcard service
+    service:
+      name: postcard
+      state: stopped
+  - name: install service script
+    template:
+      src: ../resources/postcard.service
+      dest: /etc/systemd/system/postcard.service
+  - name: start postcard service
+    service:
+      name: postcard
+      state: started
+
