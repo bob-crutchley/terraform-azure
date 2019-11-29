@@ -2,17 +2,12 @@
 - hosts: all
   become: true
   tasks:
-  - name: depencency repo
-    apt_repository:
-      repo: "deb http://deb.debian.org/debian stretch-backports main"
-      state: present
   - name: install nginx & certbot
     apt:
       name:
         - certbot
         - python-certbot-nginx
         - nginx
-      default_release: stretch-backports
       state: latest
       update_cache: true
   - name: Start NGINX Service
